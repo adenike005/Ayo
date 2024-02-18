@@ -490,6 +490,7 @@
 import os
 import random
 import string
+from datetime import datetime  # Import the datetime module
 
 class User:
     def __init__(self, username, password, address, email):
@@ -761,6 +762,7 @@ def main():
                                 choice = input("\nEnter your choice (1-5): ")
                                 if choice == '1':
                                    shopping_cart.view_cart()
+                                   
                                    
                                 elif choice == '2':
                                   while True:
