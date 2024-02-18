@@ -1,0 +1,20 @@
+name,price,description,image_url,reviews,category,inventory
+Cream,25.99,Moisturizing cream for soft and smooth skin.,cream_image_url,Great for dry skin!;Long-lasting moisturization.,Beauty,100
+BodyOil,18.49,Nourishing body oil for hydrated and glowing skin.,body_oil_image_url,Leaves skin feeling silky smooth!;Delicate fragrance.,Beauty,80
+Lipstick,12.75,Long-lasting lipstick for vibrant lip color.,lipstick_image_url,Rich pigmentation!;Smooth application.,Beauty,120
+Mascara,16.99,Volumizing mascara for dramatic lashes.,mascara_image_url,Adds length and volume!;No clumping.,Beauty,90
+Shampoo,11.49,Hydrating shampoo for healthy and shiny hair.,shampoo_image_url,Gentle formula!;Leaves hair feeling clean.,Beauty,110
+Cream,29.99,Moisturizing cream for soft and smooth skin.,cream_image_url,Great for dry skin!;Long-lasting moisturization.,Beauty,100
+BodyOil,20.79,Nourishing body oil for hydrated and glowing skin.,body_oil_image_url,Leaves skin feeling silky smooth!;Delicate fragrance.,Beauty,80
+Lipstick,14.25,Long-lasting lipstick for vibrant lip color.,lipstick_image_url,Rich pigmentation!;Smooth application.,Beauty,120
+Mascara,18.49,Volumizing mascara for dramatic lashes.,mascara_image_url,Adds length and volume!;No clumping.,Beauty,90
+Shampoo,12.29,Hydrating shampoo for healthy and shiny hair.,shampoo_image_url,Gentle formula!;Leaves hair feeling clean.,Beauty,110
+Cream,31.49,Moisturizing cream for soft and smooth skin.,cream_image_url,Great for dry skin!;Long-lasting moisturization.,Beauty,100
+BodyOil,22.59,Nourishing body oil for hydrated and glowing skin.,body_oil_image_url,Leaves skin feeling silky smooth!;Delicate fragrance.,Beauty,80
+Lipstick,15.49,Long-lasting lipstick for vibrant lip color.,lipstick_image_url,Rich pigmentation!;Smooth application.,Beauty,120
+Mascara,19.99,Volumizing mascara for dramatic lashes.,mascara_image_url,Adds length and volume!;No clumping.,Beauty,90
+Shampoo,13.75,Hydrating shampoo for healthy and shiny hair.,shampoo_image_url,Gentle formula!;Leaves hair feeling clean.,Beauty,110
+BodyOil,300.0,Nourishing body oil for hydrated and glowing skin,body_url,Perfect,Beauty,80
+Moisturizer,8000.0,A cream or lotion applied to the skin to keep it hydrated and soft.,Moisturizer_Url,Very good,Beauty,150
+cream-oil,600.0,to cream,Cream_url,['good'],beauty,2
+ring,5000.0,good to wear,ring_URL,comfortable,beauty,4
