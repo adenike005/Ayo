@@ -364,6 +364,399 @@
 
 
 
+# import csv
+# import random
+# import string
+# import hashlib
+
+# class User:
+#     def __init__(self, username, password, address, email):
+#         self.username = username
+#         self.password = password
+#         self.address = address
+#         self.email = email
+#         self.shopping_cart = ShoppingCart()
+
+# class Product:
+#     def __init__(self, name, price, description, image_url, reviews, category, inventory):
+#         self.name = name
+#         self.price = price
+#         self.description = description
+#         self.image_url = image_url
+#         self.reviews = reviews
+#         self.category = category
+#         self.inventory = inventory
+
+# class ShoppingCartItem:
+#     def __init__(self, product, quantity):
+#         self.product = product
+#         self.quantity = quantity
+
+# class ShoppingCart:
+#     def __init__(self):
+#         self.items = []
+
+#     def view_cart(self):
+#         if not self.items:
+#             print("Your shopping cart is empty.")
+#         else:
+#             print("Shopping Cart:")
+#             total_items = 0
+#             for item in self.items:
+#                 print(f"- {item.product.name}({item.quantity}) - Total Amount: ${item.product.price * item.quantity:.2f}")
+#                 total_items += item.quantity
+#             print(f"Total items in cart: {total_items}")
+#             print(f"Total amount: ${self.calculate_total():.2f}")
+
+#     def calculate_total(self):
+#         return sum(item.product.price * item.quantity for item in self.items)
+
+#     def add_to_cart(self, product, quantity=1):
+#         for item in self.items:
+#             if item.product.name == product.name:
+#                 item.quantity += quantity
+#                 break
+#         else:
+#             self.items.append(ShoppingCartItem(product, quantity))
+    
+    
+#     def remove_from_cart(self, product_name):
+#         for item in self.items:
+#             if item.product.name == product_name:
+#                 self.items.remove(item)
+#                 print(f"{product_name} removed from the cart.")
+#                 return
+#         print(f"{product_name} not found in the cart.")
+
+#     def save_total_to_file(self, user):
+#         total_amount = self.calculate_total()
+#         with open('total_amount.csv', 'w') as file:
+#             file.write(f"Total amount in shopping cart: ${total_amount}\n")
+#             file.write(f"Username: {user.username}\n")
+#             file.write("Product Details:\n")
+#             for item in self.items:
+#                 file.write(f"- {item.product.name}({item.quantity}) - Total Amount: ${item.product.price * item.quantity:.2f}\n")
+#         print("Shopping cart details saved to total_amount.csv file.")
+
+#     def load_cart_from_file(self, user):
+#         try:
+#             with open('total_amount.csv', 'r') as file:
+#                 lines = file.readlines()
+#                 if lines:
+#                     user.username = lines[1].split(': ')[1].strip()
+#                     items = lines[3:]
+#                     for item_line in items:
+#                         item_details = item_line.split(' - ')
+#                         if len(item_details) >= 4:  # Ensure there are enough elements
+#                             product_name = item_details[1].split('(')[0].strip()
+#                             quantity = int(item_details[1].split('(')[1].split(')')[0].strip())
+#                             product_price = float(item_details[3].split(': ')[1].strip())
+#                             product = Product(product_name, product_price, '', '', '', '', 0)
+#                             self.items.append(ShoppingCartItem(product, quantity))
+#                         else:
+#                             print("Invalid format in the shopping cart file. Skipping item.")
+#                     # print("Shopping cart loaded from total_amount.csv file.")
+#         except FileNotFoundError:
+#             pass
+
+# class UserManager:
+#     def __init__(self):
+#         self.users = {}
+#         self.load_users()
+
+#     def load_users(self):
+#         try:
+#             with open('users.csv', 'r') as file:
+#                 reader = csv.DictReader(file)
+#                 for row in reader:
+#                     user = User(row['username'], row['password'], row['address'], row['email'])
+#                     user.shopping_cart.load_cart_from_file(user)
+#                     self.users[row['email']] = user
+#         except FileNotFoundError:
+#             pass
+
+#     def save_users(self):
+#         with open('users.csv', 'w', newline='') as file:
+#             fieldnames = ['username', 'password', 'address', 'email']
+#             writer = csv.DictWriter(file, fieldnames=fieldnames)
+#             writer.writeheader()
+#             for user in self.users.values():
+#                 writer.writerow({'username': user.username, 'password': user.password, 'address': user.address, 'email': user.email})
+
+#     def register(self, username, password, address, email):
+#         if len(password) < 6 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password) or not any(char in string.punctuation for char in password):
+#             print("Password must be at least 6 characters long and contain a mix of letters, numbers, and special characters.")
+#             return False
+
+#         if '@gmail.com' not in email:
+#             print("Email must be a Gmail address.")
+#             return False
+
+#         if email in self.users:
+#             print("Email already exists. Please choose another one.")
+#             return False
+
+#         user = User(username, self.hash_password(password), address, email)
+#         user.shopping_cart.load_cart_from_file(user)
+#         self.users[email] = user
+#         self.save_users()
+#         print("Registration successful!")
+#         return True
+
+#     def login(self, email, password):
+#         max_attempts = 3
+#         login_attempts = 0
+#         while login_attempts < max_attempts:
+#             if email in self.users:
+#                 if self.check_password(password, self.users[email].password):
+#                     print("Login successful!")
+#                     return True
+#                 else:
+#                     login_attempts += 1
+#                     if login_attempts < max_attempts:
+#                         print(f"\nInvalid username or password. You have {max_attempts - login_attempts} attempts remaining.")
+#                     else:
+#                         print("Maximum login attempts reached. You need to reset your password.")
+#                         email = input("Enter your email address to reset your password: ")
+#                         self.reset_password(email)
+#                         break
+#             else:
+#                 print("Email not found.")
+#                 return False
+
+#     def reset_password(self, email):
+#         if email in self.users:
+#             new_password = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=8))
+#             self.users[email].password = self.hash_password(new_password)
+#             self.save_users()
+#             print(f"Your password has been reset to: {new_password}")
+#             return True
+#         print("Email address not found.")
+#         return False
+
+#     def hash_password(self, password):
+#         return hashlib.sha256(password.encode()).hexdigest()
+
+#     def check_password(self, password, hashed_password):
+#         return self.hash_password(password) == hashed_password
+
+# class ProductManager:
+#     def __init__(self):
+#         self.products = []
+#         self.load_products()
+
+#     def load_products(self):
+#         try:
+#             with open('products.csv', 'r') as file:
+#                 reader = csv.DictReader(file)
+#                 for row in reader:
+#                     self.products.append(Product(row['name'], float(row['price']), row['description'], row['image_url'], row['reviews'], row['category'], int(row['inventory'])))
+#         except FileNotFoundError:
+#             pass
+
+#     def save_products(self):
+#         with open('products.csv', 'w', newline='') as file:
+#             fieldnames = ['name', 'price', 'description', 'image_url', 'reviews', 'category', 'inventory']
+#             writer = csv.DictWriter(file, fieldnames=fieldnames)
+#             writer.writeheader()
+#             for product in self.products:
+#                 writer.writerow({'name': product.name, 'price': product.price, 'description': product.description, 'image_url': product.image_url, 'reviews': product.reviews, 'category': product.category, 'inventory': product.inventory})
+
+#     def add_product(self, name, price, description, image_url, reviews, category, inventory):
+#         self.products.append(Product(name, price, description, image_url, reviews, category, inventory))
+#         self.save_products()
+#         print("Product added successfully!")
+
+#     def browse_products(self):
+#         print("\nProduct Browsing")
+#         print("-------------------------------")
+#         print("1. Search for products by name")
+#         print("2. Search for products by category")
+#         print("3. Search for products by price range")
+#         print("4. Show all products with details")
+#         print("5. Go back to the main menu")
+
+#     def search_by_name(self):
+#         name = input("Enter the product name: ")
+#         found = False
+#         for product in self.products:
+#             if name.lower() in product.name.lower():
+#                 print(f"\nName: {product.name}")
+#                 print(f"Price: {product.price}")
+#                 print(f"Description: {product.description}")
+#                 print(f"Category: {product.category}")
+#                 print(f"Inventory: {product.inventory}")
+#                 found = True
+#         if not found:
+#             print("Product not found.")
+
+#     def search_by_category(self):
+#         category = input("Enter the product category: ")
+#         found = False
+#         for product in self.products:
+#             if category.lower() in product.category.lower():
+#                 print(f"\nName: {product.name}")
+#                 print(f"Price: {product.price}")
+#                 print(f"Description: {product.description}")
+#                 print(f"Category: {product.category}")
+#                 print(f"Inventory: {product.inventory}")
+#                 found = True
+#         if not found:
+#             print("Product not found.")
+
+#     def search_by_price_range(self):
+#         min_price = float(input("Enter the minimum price: "))
+#         max_price = float(input("Enter the maximum price: "))
+#         found = False
+#         for product in self.products:
+#             if min_price <= product.price <= max_price:
+#                 print(f"\nName: {product.name}")
+#                 print(f"Price: {product.price}")
+#                 print(f"Description: {product.description}")
+#                 print(f"Category: {product.category}")
+#                 print(f"Inventory: {product.inventory}")
+#                 found = True
+#         if not found:
+#             print("Product not found.")
+
+#     def show_all_products(self):
+#         print("\nAll Products:")
+#         for product in self.products:
+#             print("\nName:", product.name)
+#             print("Price:", product.price)
+#             print("Description:", product.description)
+#             print("Category:", product.category)
+#             print("Inventory:", product.inventory)
+#             print("-------------------------------")
+
+# def main():
+#     user_manager = UserManager()
+#     product_manager = ProductManager()
+
+#     while True:
+#         print("\nWelcome!")
+#         print("1. Register")
+#         print("2. Login")
+#         print("3. Exit")
+
+#         choice = input("Enter your choice (1-3): ")
+
+#         if choice == '1':
+#             username = input("Enter your username: ")
+#             password = input("Enter your password: ")
+#             address = input("Enter your address: ")
+#             email = input("Enter your email: ")
+#             user_manager.register(username, password, address, email)
+
+#         elif choice == '2':
+#             email = input("Enter your email: ")
+#             password = input("Enter your password: ")
+#             if user_manager.login(email, password):
+#                 user = user_manager.users[email]
+                
+#                 while True:
+#                     # Check if the user is a seller or buyer
+#                     user_type = input("Are you a seller or buyer? Type 'seller' or 'buyer': ")
+#                     if user_type.lower() == 'seller':
+#                         # Seller functionality
+#                         name = input("Enter the product name: ")
+#                         price = float(input("Enter the product price: "))
+#                         description = input("Enter the product description: ")
+#                         image_url = input("Enter the product image URL: ")
+#                         reviews = input("Enter the product reviews: ")
+#                         category = input("Enter the product category: ")
+#                         inventory = int(input("Enter the product inventory: "))
+#                         product_manager.add_product(name, price, description, image_url, reviews, category, inventory)
+#                         print("Product added successfully!")
+#                     else:
+#                         # Buyer functionality
+#                         while True:
+#                             print("\nWhat would you like to do")
+#                             print("\n1. Product Browsing")
+#                             print("2. Shopping Cart Management")
+#                             print("3. Order Tracking")
+#                             print("4. Customer Support")
+#                             print("5. Transaction History")
+#                             print("6. Logout")
+
+#                             inner_choice = input("\nEnter your choice (1-6): ")
+
+#                             if inner_choice == '1':
+#                                 product_manager.browse_products()
+#                                 browse_choice = input("\nEnter your choice (1-5): ")
+#                                 if browse_choice == '1':
+#                                     product_manager.search_by_name()
+#                                 elif browse_choice == '2':
+#                                     product_manager.search_by_category()
+#                                 elif browse_choice == '3':
+#                                     product_manager.search_by_price_range()
+#                                 elif browse_choice == '4':
+#                                     product_manager.show_all_products()
+#                                 elif browse_choice == '5':
+#                                     continue
+#                                 else:
+#                                     print("Invalid choice. Please enter a number between (1-5).")
+
+#                             elif inner_choice == '2':
+#                                 user.shopping_cart.view_cart()
+#                                 print("1. Add to Cart")
+#                                 print("2. View cart")
+#                                 print("3. Remove cart")
+#                                 print("4. Go back to the main menu")
+#                                 cart_choice = input("Enter your choice (1-2): ")
+#                                 if cart_choice == '1':
+#                                     product_name = input("Enter the product name to add to cart: ")
+#                                     quantity = int(input("Enter the quantity: "))
+#                                     selected_product = None
+#                                     for product in product_manager.products:
+#                                         if product.name == product_name:
+#                                             selected_product = product
+#                                             break
+#                                     if selected_product:
+#                                         user.shopping_cart.add_to_cart(selected_product, quantity)
+#                                         user.shopping_cart.save_total_to_file(user)
+#                                         user_manager.save_users()
+#                                         print("Product added to cart.")
+#                                     else:
+#                                         print("Product not found.")
+                                        
+#                                 elif cart_choice == '2':
+#                                     user.shopping_cart.view_cart()
+                                    
+#                                 elif cart_choice == '3':
+#                                     product_name = input("Enter the product name to remove from the cart: ")
+#                                     user.shopping_cart.remove_from_cart(product_name)
+#                                     user.shopping_cart.save_total_to_file(user)
+#                                     user_manager.save_users()
+                                    
+#                                 elif cart_choice == '4':
+#                                     continue
+#                                 else:
+#                                     print("Invalid choice. Please enter 6a number between (1-4).")
+
+#                             elif inner_choice == '6':
+#                                 print("Logged out successfully.")
+#                                 break
+
+#                     logout_choice = input("Would you like to logout? (yes/no): ")
+#                     if logout_choice.lower() == 'yes':
+#                         break
+#                     elif logout_choice.lower() == 'no':
+#                         continue
+#                     else:
+#                         print("Invalid choice. Please enter 'yes' or 'no'.")
+
+#         elif choice == '3':
+#             print("Goodbye!")
+#             break
+
+#         else:
+#             print("Invalid choice. Please enter a number between 1 and 3.")
+
+# if __name__ == "__main__":
+#     main()
+
+
 import csv
 import random
 import string
@@ -418,12 +811,17 @@ class ShoppingCart:
                 break
         else:
             self.items.append(ShoppingCartItem(product, quantity))
-    
-    
-    def remove_from_cart(self, product_name):
+
+    def remove_from_cart(self, product_name, quantity=None):
         for item in self.items:
             if item.product.name == product_name:
-                self.items.remove(item)
+                if quantity:
+                    if item.quantity > quantity:
+                        item.quantity -= quantity
+                    else:
+                        self.items.remove(item)
+                else:
+                    self.items.remove(item)
                 print(f"{product_name} removed from the cart.")
                 return
         print(f"{product_name} not found in the cart.")
@@ -442,27 +840,31 @@ class ShoppingCart:
         try:
             with open('total_amount.csv', 'r') as file:
                 lines = file.readlines()
-                if lines:
+                if len(lines) >= 3:  # Ensure minimum lines required
                     user.username = lines[1].split(': ')[1].strip()
                     items = lines[3:]
                     for item_line in items:
-                        item_details = item_line.split(' - ')
-                        if len(item_details) >= 4:  # Ensure there are enough elements
-                            product_name = item_details[1].split('(')[0].strip()
-                            quantity = int(item_details[1].split('(')[1].split(')')[0].strip())
-                            product_price = float(item_details[3].split(': ')[1].strip())
-                            product = Product(product_name, product_price, '', '', '', '', 0)
+                        item_details = item_line.strip().split(' - ')
+                        if len(item_details) >= 2:  # Ensure there are enough elements
+                            product_name, quantity_info = item_details[0].split('(')
+                            quantity = int(quantity_info.split(')')[0])
+                            total_amount = float(item_details[1].split('$')[1])
+                            product = Product(product_name, total_amount / quantity, '', '', '', '', 0)
                             self.items.append(ShoppingCartItem(product, quantity))
                         else:
                             print("Invalid format in the shopping cart file. Skipping item.")
-                    print("Shopping cart loaded from total_amount.csv file.")
+                    # print("Shopping cart loaded from total_amount.csv file.")
         except FileNotFoundError:
-            pass
+            print("Shopping cart file not found.")
+        except Exception as e:
+            print(f"Error loading shopping cart: {str(e)}")
+
 
 class UserManager:
     def __init__(self):
         self.users = {}
         self.load_users()
+
 
     def load_users(self):
         try:
@@ -518,18 +920,15 @@ class UserManager:
                     else:
                         print("Maximum login attempts reached. You need to reset your password.")
                         email = input("Enter your email address to reset your password: ")
-                        new_password = input("Enter your new password: ")
-                        self.reset_password(email, new_password)
+                        self.reset_password(email)
                         break
             else:
                 print("Email not found.")
                 return False
 
-    def reset_password(self, email, new_password):
+    def reset_password(self, email):
         if email in self.users:
-            if len(new_password) < 6 or not any(char.isdigit() for char in new_password) or not any(char.isalpha() for char in new_password) or not any(char in string.punctuation for char in new_password):
-                print("Password must be at least 6 characters long and contain a mix of letters, numbers, and special characters.")
-                return False
+            new_password = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=8))
             self.users[email].password = self.hash_password(new_password)
             self.save_users()
             print(f"Your password has been reset to: {new_password}")
@@ -728,7 +1127,8 @@ def main():
                                     
                                 elif cart_choice == '3':
                                     product_name = input("Enter the product name to remove from the cart: ")
-                                    user.shopping_cart.remove_from_cart(product_name)
+                                    quantity = int(input("Enter the quantity to remove (Enter 0 to remove all): "))
+                                    user.shopping_cart.remove_from_cart(product_name, quantity)
                                     user.shopping_cart.save_total_to_file(user)
                                     user_manager.save_users()
                                     
